@@ -60,12 +60,12 @@ class BulkMerger
     end
 
     unmerged_pull_requests.each do |pr|
-      print "Merging PR '#{pr.title}' (#{pr.html_url}) "
+      print "Rebase and merging PR '#{pr.title}' (#{pr.html_url}) "
 
       repo = pr.repository_url.gsub("https://api.github.com/repos/", "")
 
       begin
-        client.merge_pull_request(repo, pr.number)
+        client.merge_pull_request(repo, pr.number, '', :merge_method => "rebase")
         puts "✅"
       rescue Octokit::MethodNotAllowed => e
         puts "❌ Failed to merge: #{e.message.inspect}"
