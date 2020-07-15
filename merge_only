@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
 source .env
-export QUERY_STRING=$1
+
+if [ -n "$1" ]; then
+  # override global topic from .env
+  export QUERY_STRING="$1"
+fi
+
+if [ -n "$2" ]; then
+  # override global topic from .env
+  export TOPIC="$2"
+fi
+
 bundle exec rake merge_only

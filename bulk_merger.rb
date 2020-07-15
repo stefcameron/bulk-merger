@@ -1,8 +1,13 @@
+# see https://github.com/octokit/octokit.rb
 require "octokit"
 
 class BulkMerger
   def self.approve_unreviewed_pull_requests!(list: nil)
-    puts "Searching for PRs containing '#{query_string}'"
+    msg = "Searching for PRs containing '#{query_string}'"
+    if topic
+      msg += " in repos with topic '#{topic}'"
+    end
+    puts msg
 
     unreviewed_pull_requests = find_govuk_pull_requests("review:none #{query_string}")
 
@@ -78,17 +83,17 @@ class BulkMerger
   end
 
   def self.govuk_repos
-
     search = "org:#{user_name}"
 
-    if topic != "NONE"
+    if topic
       search += " topic:#{topic}"
     end
 
-    @govuk_repos ||= client.search_repos(search)
-      .items
-      .reject!(&:archived)
-      .map { |repo| repo.full_name }
+    puts 'Searching...'
+    items = client.search_repos(search).items
+    items.reject! { |repo| repo.archived }
+
+    @govuk_repos ||= items.map { |repo| repo.full_name }
   end
 
   def self.find_govuk_pull_requests(query)
@@ -102,14 +107,15 @@ class BulkMerger
   end
 
   def self.query_string
-    ENV.fetch("QUERY_STRING")
+    ENV.fetch("QUERY_STRING", "[DEPENDABOT]")
   end
 
   def self.user_name
-    ENV.fetch("GITHUB_USER", "alphagov")
+    ENV.fetch("GITHUB_USER")
   end
 
+  # OPTIONAL: a single topic (i.e. tag) set on a repository (in the 'About' section)
   def self.topic
-    ENV.fetch("GITHUB_TOPIC", "govuk")
+    ENV.fetch("TOPIC", nil)
   end
 end
