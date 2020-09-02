@@ -3,7 +3,7 @@
 source .env
 
 if [ -n "$1" ]; then
-  # override global topic from .env
+  # override global query from .env
   export QUERY_STRING="$1"
 fi
 

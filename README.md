@@ -6,12 +6,12 @@ Bulk merge GitHub Pull Requests across an entire Organization.
 
 - Use [rvm](http://rvm.io/) to install Ruby 2.6.6: `rvm install 2.6.6` (this may take a while).
 - Install the Gems by running `bundle install` in the repo root.
-- Optionally add the `./bin` directory to your PATH.
+- Optionally add the repository's local directory to your PATH.
 
 ## Setup
 
 Create a [Personal access token](https://github.com/settings/tokens), with at least the `repo/public_repo`
-scope. Add your token with repo access to `bin/.env`, and configure other parameters:
+scope. Add your token with repo access to `./.env`, and configure other parameters:
 
 ```
 # REQUIRED: API token
@@ -38,9 +38,9 @@ The scripts will use this token to talk to GitHub.
 $ ./review gds-api-adapters
 ```
 
-- QUERY: Optional piece of text to search for in open PR titles. Defaults to `"[DEPENDABOT]"`, which is the [commit prefix](https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates#commit-message) we add to all our Dependabot PRs. You can use this to search for `"babel/core"`, for example, which would find all open PRs across, all repos in the `GITHUB_USER` org, that related to upgrading that dependency.
+- QUERY: Optional piece of text to search for in open PR titles. Defaults to `"[DEPENDABOT]"`, which is the [commit prefix](https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates#commit-message) we add to all our Dependabot PRs. You can use this to search for `"babel/core"`, for example, which would find all open PRs across, all repos in the `GITHUB_USER` org, that are related to upgrading that dependency.
     -   Tip: To use the default QUERY but specify a TOPIC, call `./review "" topic` (pass an empty string as the QUERY).
-- TOPIC: Optional topic/tag to override what's in the `./.env` file.
+- TOPIC: Optional topic/tag to override what's in the `./.env` file. If there is no topic, ALL repositories in the `GITHUB_USER` org will be searched.
 
 The above example looks for unreviewed PRs in the configured organization with "gds-api-adapters" (an NPM package name) in the title. If it finds any, it will list them out and ask you to confirm if you want to approve them.
 
